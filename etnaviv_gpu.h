@@ -23,6 +23,7 @@
 #include "etnaviv_drv.h"
 
 struct etnaviv_gem_submit;
+struct etnaviv_vram_mapping;
 
 struct etnaviv_chip_identity {
 	/* Chip model. */
@@ -103,6 +104,7 @@ struct etnaviv_gpu {
 
 	/* 'ring'-buffer: */
 	struct etnaviv_cmdbuf *buffer;
+	int exec_state;
 
 	/* bus base address of memory  */
 	u32 memory_base;
@@ -123,7 +125,7 @@ struct etnaviv_gpu {
 	u32 completed_fence;
 	u32 retired_fence;
 	wait_queue_head_t fence_event;
-	unsigned int fence_context;
+	u64 fence_context;
 	spinlock_t fence_spinlock;
 
 	/* worker for handling active-list retiring: */
@@ -158,6 +160,8 @@ struct etnaviv_cmdbuf {
 	dma_addr_t paddr;
 	u32 size;
 	u32 user_size;
+	/* vram node used if the cmdbuf is mapped through the MMUv2 */
+	struct drm_mm_node vram_node;
 	/* fence after which this buffer is to be disposed */
 	struct fence *fence;
 	/* target exec state */
@@ -166,7 +170,7 @@ struct etnaviv_cmdbuf {
 	struct list_head node;
 	/* BOs attached to this command buffer */
 	unsigned int nr_bos;
-	struct etnaviv_gem_object *bo[0];
+	struct etnaviv_vram_mapping *bo_map[0];
 };
 
 static inline void gpu_write(struct etnaviv_gpu *gpu, u32 reg, u32 data)
