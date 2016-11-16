@@ -1,0 +1,53 @@
+It is an extraction of the latest etnaviv (https://github.com/etnaviv) drm driver version from mainline kernel to test the support of the Beagleboard X15 (am57x) integrated Vivante GC320 GPU.
+- it is backported to 4.4.x kernel
+- it can be used without kernel recompilation by modifying DTB
+- armada X11 driver can be used to take advantage of the GPU (https://github.com/xobs/xserver-xorg-video-armada)
+
+Modifying DTB in DTBs directory (/boot/dtbs):
+
+Backup the current DTB:
+# cp am57xx-beagle-x15.dtb am57xx-beagle-x15.dtb.BAK
+
+Decompile DTB:
+# dtc -I dtb -O dts am57xx-beagle-x15.dtb > am335x-boneblack.dts
+
+In am335x-boneblack.dts, replace the bb2d entry (was "bb2d@59000000 {compatible = "ti,dra7-bb2d" ...") by:
+
+ gpu_2d: bb2d@59000000 {
+                        compatible = "ti,dra7-bb2d","vivante,gc";
+                        reg = <0x59000000 0x700>;
+						interrupts = <0x0 0x78 0x4>;
+                        ti,hwmods = "bb2d";
+                        clocks = <0xc2>;
+                        clock-names = "fclk";
+                        status = "okay";
+                        linux,phandle = <0x1b0>;
+                        phandle = <0x1b0>;
+                };
+And add:
+  gpu-subsystem {
+      compatible = "ti,dra7-gpu-subsystem";
+      cores = <&gpu_2d>;
+	};
+
+Recompile DTS:
+# dtc -O dtb -o am57xx-beagle-x15.dtb -b 0 am335x-boneblack.dts
+
+Reboot:
+# reboot
+
+Compiling the module:
+# make -C /usr/src/$(YOUR_KERNEL_HEADERS)/ M=$PWD 
+# insmod etnaviv.ko
+
+At this point, the device should be recognised:
+# dmesg
+...
+[11108.002439] etnaviv gpu-subsystem: bound 59000000.bb2d (ops gpu_ops [etnaviv])
+[11108.002461] etnaviv-gpu 59000000.bb2d: model: GC320, revision: 5301
+
+Installing armada X11 driver:
+To be able to compile and use https://github.com/xobs/xserver-xorg-video-armada, you will need to install : 
+- libdrm-armada (git://ftp.arm.linux.org.uk/~rmk/libdrm-armada.git/)
+- galcore headers https://github.com/etnaviv/galcore_headers (cp -fr galcore_headers/tree/master/include_v4 /usr/local/include/HAL)
+- libetnaviv https://github.com/etnaviv/libetnaviv
