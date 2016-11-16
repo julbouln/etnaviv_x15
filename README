@@ -9,9 +9,9 @@ Backup the current DTB:
 # cp am57xx-beagle-x15.dtb am57xx-beagle-x15.dtb.BAK
 
 Decompile DTB:
-# dtc -I dtb -O dts am57xx-beagle-x15.dtb > am335x-boneblack.dts
+# dtc -I dtb -O dts am57xx-beagle-x15.dtb > am57xx-beagle-x15.dts
 
-In am335x-boneblack.dts, replace the bb2d entry (was "bb2d@59000000 {compatible = "ti,dra7-bb2d" ...") by:
+In am57xx-beagle-x15.dts, replace the bb2d entry (was "bb2d@59000000 {compatible = "ti,dra7-bb2d" ...") by:
 
  gpu_2d: bb2d@59000000 {
                         compatible = "ti,dra7-bb2d","vivante,gc";
@@ -31,7 +31,7 @@ And add:
 	};
 
 Recompile DTS:
-# dtc -O dtb -o am57xx-beagle-x15.dtb -b 0 am335x-boneblack.dts
+# dtc -O dtb -o am57xx-beagle-x15.dtb -b 0 am57xx-beagle-x15.dts
 
 Reboot:
 # reboot
