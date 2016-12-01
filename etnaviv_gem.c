@@ -554,7 +554,7 @@ void etnaviv_gem_free_object(struct drm_gem_object *obj)
 	/* object should not be active */
 	WARN_ON(is_active(etnaviv_obj));
 
-	list_del(&etnaviv_obj->gem_node);
+//	list_del(&etnaviv_obj->gem_node);
 
 	list_for_each_entry_safe(mapping, tmp, &etnaviv_obj->vram_list,
 				 obj_node) {
@@ -584,7 +584,7 @@ int etnaviv_gem_obj_add(struct drm_device *dev, struct drm_gem_object *obj)
 	struct etnaviv_gem_object *etnaviv_obj = to_etnaviv_bo(obj);
 
 	mutex_lock(&priv->gem_lock);
-	list_add_tail(&etnaviv_obj->gem_node, &priv->gem_list);
+//	list_add_tail(&etnaviv_obj->gem_node, &priv->gem_list);
 	mutex_unlock(&priv->gem_lock);
 
 	return 0;
