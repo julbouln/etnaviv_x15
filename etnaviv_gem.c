@@ -573,7 +573,7 @@ void etnaviv_gem_free_object(struct drm_gem_object *obj)
 		list_del(&mapping->obj_node);
 		kfree(mapping);
 	}
-	mutex_unlock(&priv->gem_lock);
+	mutex_unlock(&etnaviv_obj->lock);
 
 	drm_gem_free_mmap_offset(obj);
 	etnaviv_obj->ops->release(etnaviv_obj);
