@@ -1,5 +1,5 @@
 It is an extraction of the latest etnaviv (https://github.com/etnaviv) drm driver version from mainline kernel to test the support of the Beagleboard X15 (am57x) integrated Vivante GC320 GPU.
-- it is backported to 4.4.x kernel
+- it is backported to 4.9.x kernel
 - it can be used without kernel recompilation by modifying DTB
 - armada X11 driver can be used to take advantage of the GPU (https://github.com/xobs/xserver-xorg-video-armada)
 

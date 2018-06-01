@@ -19,13 +19,6 @@
 #include "etnaviv_gpu.h"
 #include "etnaviv_gem.h"
 
-
-#define u64_to_user_ptr(x) (            \
- {                                       \
-         typecheck(u64, x);              \
-         (void __user *)(uintptr_t)x;    \
- }                                       \
-)
 /*
  * Cmdstream submission:
  */
@@ -271,8 +264,8 @@ static int submit_reloc(struct etnaviv_gem_submit *submit, void *stream,
 		if (ret)
 			return ret;
 
-		if (r->reloc_offset >= bo->obj->base.size - sizeof(*ptr)) {
-			DRM_ERROR("relocation %u outside object", i);
+		if (r->reloc_offset > bo->obj->base.size - sizeof(*ptr)) {
+			DRM_ERROR("relocation %u outside object\n", i);
 			return -EINVAL;
 		}
 
