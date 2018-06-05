@@ -182,7 +182,7 @@ bool etnaviv_cmd_validate_one(struct etnaviv_gpu *gpu, u32 *stream,
 		case FE_OPCODE_DRAW_2D:
 			n = EXTRACT(cmd, VIV_FE_DRAW_2D_HEADER_COUNT) * 2 + EXTRACT(cmd, VIV_FE_DRAW_2D_HEADER_DATA_COUNT);
 			if (n == 0)
-				n = 256;
+				n = 512;
 			len = 2 + n;
 			break;
 
